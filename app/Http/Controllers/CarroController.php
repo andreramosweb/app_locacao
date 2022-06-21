@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class CarroController extends Controller
 {
+
+    public function __construct(Carro $carro){
+        $this->carro = $carro;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,18 +19,11 @@ class CarroController extends Controller
      */
     public function index()
     {
-        //
+        $carros = $this->carro->all();
+
+        return $carros;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,51 +33,46 @@ class CarroController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $carro = $this->carro->create($request->all());
+        return $carro;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Carro  $carro
+     * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Carro $carro)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Carro  $carro
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Carro $carro)
-    {
-        //
+        $carro = $this->carro->find($id);
+        return $carro;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Carro  $carro
+     * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Carro $carro)
+    public function update(Request $request, $id)
     {
-        //
+        $carro = $this->carro->find($id);
+        $carro->update($request->all());
+        return $carro;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Carro  $carro
+     * @param  Integer $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Carro $carro)
+    public function destroy($id)
     {
-        //
+        $carro = $this->carro->find($id);
+        $carro->delete();
+        return ['msg' => 'Carro deletedo com sucesso!'];
     }
 }
