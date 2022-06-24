@@ -10,9 +10,7 @@ class MarcaController extends Controller
 
     public function __construct(Marca $marca)
     {
-
         $this->marca = $marca;
-
     }
 
     /**
@@ -23,7 +21,7 @@ class MarcaController extends Controller
     public function index()
     {
         $marcas = $this->marca->all();
-        return $marcas;
+        return response()->json($marcas, 200);
     }
 
 
@@ -35,8 +33,11 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate($this->marca->rules(), $this->marca->feedback());
+
         $marca = $this->marca->create($request->all());
-        return $marca;
+        return response()->json($marca, 201);
     }
 
     /**
@@ -48,7 +49,12 @@ class MarcaController extends Controller
     public function show($id)
     {
         $marca = $this->marca->find($id);
-        return $marca;
+
+        if($marca === null) {
+            return response()->json(['erro' => 'O recurso solicitado não existe'], 404);
+        }
+
+        return response()->json($marca, 200);
     }
 
 
@@ -62,8 +68,15 @@ class MarcaController extends Controller
     public function update(Request $request, $id)
     {
         $marca = $this->marca->find($id);
+
+        if($marca === null) {
+            return response()->json(['erro' => 'Impossível atualizar recurso. O recurso solicitado não existe'], 404);
+        }
+
+        $request->validate($marca->rules(), $marca->feedback());
+
         $marca->update($request->all());
-        return $marca;
+        return response()->json($marca, 200);
     }
 
     /**
@@ -75,7 +88,12 @@ class MarcaController extends Controller
     public function destroy($id)
     {
         $marca = $this->marca->find($id);
+
+        if($marca === null) {
+            return response()->json(['erro' => 'Impossível deletar recurso. O recurso solicitado não existe'], 404);
+        }
+
         $marca->delete();
-        return ['msg' => 'marca excluída com sucesso!'];
+        return response()->json(['msg' => 'marca excluída com sucesso!'], 200);
     }
 }
